@@ -1,0 +1,91 @@
+:root {
+  --primary-color: hsl(94, 55%, 56%);
+  --hover-color: hsl(93, 75%, 76%);
+  --error-color: hsl(96, 75%, 89%);
+  --white-color: hsl(0, 0%, 100%);
+  --black-color: hsl(0, 0%,18%);
+  --grey-text: hsl(0,0%,75%);
+  --bg-color: hsl(113, 11%, 85%);
+  --input-color: hsl(330, 12%, 97%) ;
+  --pale-green: hsl(154, 14%, 90%);
+  --biggestFontSize: 2.5rem;
+  --h1FontSize: 1.5rem;
+  --h2FontSize: 1.25rem;
+  --h3FontSize: 1rem;
+  --normalFontSize: .938rem;
+  --smallFontSize: .813rem;
+  --smallestFontSize: .75rem;
+}
+
+.sidebar {
+  display: flex;
+  height: 95vh;
+  background: var(--pale-green);
+  position: relative;
+}
+.sidebar .SBContainer {
+  flex-direction: column;
+}
+.sidebar .SBContainer .header {
+  text-align: center;
+  padding: 1.5rem 0;
+}
+.sidebar .SBContainer .header img {
+  width: 60px;
+  padding-top: 0;
+  padding-bottom: 0.5rem;
+}
+.sidebar .SBContainer .body {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem 1rem;
+  height: 100%;
+  overflow-y: auto;
+}
+.sidebar .SBContainer .body .section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--white-color);
+}
+.sidebar .SBContainer .body .section .setting {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.sidebar .SBContainer .body .section .setting .listItem {
+  display: flex;
+  gap: 0.5rem;
+  background: var(--input-color);
+  border-radius: 10px;
+  padding: auto;
+}
+.sidebar .SBContainer .body .helpcenter {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--white-color);
+  border-radius: 15px;
+  text-align: center;
+  background: var(--white-color);
+}
+.sidebar .SBContainer .body .helpcenter .abc {
+  display: block;
+  text-align: center;
+  color: purple;
+}
+.sidebar .closeIcon {
+  font-size: var(--h2FontSize);
+  cursor: pointer;
+  position: absolute;
+  right: -15px;
+  top: 50%;
+  bottom: 50%;
+  transform: translate(-50%);
+  color: var(--primary-color);
+  background: var(--pale-green);
+  border-radius: 50%;
+}/*# sourceMappingURL=SideBar.css.map */
