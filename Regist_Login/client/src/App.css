@@ -361,40 +361,241 @@ img, video {
     width: 85%;
   }
 }
-.AdminPage .dashboard .dashboardcontainer .side {
-  width: 20%;
-  height: 100%;
-  background: var(--bg-color);
-  padding: 1rem;
+.adminpage {
+  height: 100vh;
+  width: 100%;
+  justify-content: center;
+}
+.adminpage .admincontainer {
+  display: flex;
+  flex-direction: row;
+  height: 95vh;
+  width: 95%;
   border-radius: 5px;
+  overflow: hidden;
   box-shadow: 0 7px 50px rgb(214, 223, 213);
 }
-.AdminPage .dashboard .dashboardcontainer .content {
-  width: 80%;
-  height: 100%;
-  background: var(--white-color);
-  padding: 1rem;
+.adminpage .admincontainer .side {
+  display: flex;
+  width: 10%;
+  height: 95vh;
+}
+.adminpage .admincontainer .content {
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  height: 95vh;
   border-radius: 5px;
+  overflow: hidden;
   box-shadow: 0 7px 50px rgb(214, 223, 213);
 }
-.AdminPage .dashboard .dashboardcontainer .content .body .container .top {
+.adminpage .admincontainer .content .body {
+  width: 100%;
+  height: 100%;
+}
+.adminpage .admincontainer .content .body .headerDiv {
+  padding: 1.5rem;
+  width: 100%;
+  background: #d6eef8;
+  box-shadow: 10%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.adminpage .admincontainer .content .body .headerDiv .title {
+  font-size: 30px;
+  color: #151e22;
+  font-weight: 600;
+}
+.adminpage .admincontainer .content .body .top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: auto;
+}
+.adminpage .admincontainer .content .body .top .adminControll {
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 10px;
+  gap: 1rem;
+}
+.adminpage .admincontainer .content .body .top .adminControll .button {
+  padding: 10px;
+  width: 200px;
+  background-color: #d6f0fa;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.3s ease;
+  border: none;
+}
+.adminpage .admincontainer .content .body .top .adminControll .button:hover {
+  background: #41c7fc;
+  color: #f0f4f6;
+}
+.adminpage .admincontainer .content .body .mid {
+  display: flex;
+}
+
+.list {
+  width: 100%;
+  height: 30px;
+  justify-content: center;
+  flex-direction: column;
+}
+.list .searchbar {
+  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
-.AdminPage .dashboard .dashboardcontainer .content .body .container .top .button {
-  background: var(--primary-color);
-  color: var(--white-color);
-  padding: 0.8rem 1.5rem;
+.list .searchbar .search .icon {
+  color: var(--grey-text);
+  cursor: pointer;
+  transform: translateX(-100%);
+  right: -15px;
+  top: 50%;
+}
+.list .searchbar .search .input {
+  gap: 0.5rem;
+  padding: 1rem;
+  background: var(--input-color);
   border-radius: 10px;
-  font-weight: 400;
-  transition: 0.3s ease;
 }
-.AdminPage .dashboard .dashboardcontainer .content .body .container .top .button:hover {
-  background: var(--hover-color);
-  color: var(--black-color);
+.list .table {
+  width: 100%;
 }
-.AdminPage .dashboard .dashboardcontainer .content .body .container .top .button:hover .icon {
-  color: var(--black-color);
-  transform: translateX(5px);
+.list .table caption {
+  text-transform: uppercase;
+  font-weight: bold;
+  color: #fab700;
+  text-align: center;
+}
+.list .table thead {
+  border-top: 2px solid #fab700;
+  border-bottom: 2px solid #fab700;
+}
+.list .table thead th {
+  text-transform: uppercase;
+  text-align: center;
+  padding: 10px;
+  color: #006ac6;
+  border: 1px solid #F1F1F1;
+}
+.list .table tbody tr {
+  border-bottom: 1px solid #F1F1F1;
+  color: #75787b;
+}
+.list .table tbody tr td {
+  padding: 10px;
+  border: 1px solid #F1F1F1;
+}
+.list .table tbody tr th {
+  padding-left: 10px;
+  border: 1px solid #F1F1F1;
+}
+.list .table tfoot {
+  color: #fab700;
+  font-style: italic;
+  border-bottom: 2px solid #fab700;
+}
+.list .table tfoot tr td {
+  padding: 10px;
+  border: 1px solid #F1F1F1;
+}
+
+.userpage {
+  height: 100vh;
+  width: 100%;
+  justify-content: center;
+}
+.userpage .usercontainer {
+  display: flex;
+  flex-direction: row;
+  height: 95%;
+  width: 95%;
+  border-radius: 5px;
+  overflow: hidden;
+  box-shadow: 0 7px 50px rgb(214, 223, 213);
+}
+.userpage .usercontainer .side {
+  display: flex;
+  width: 10%;
+  height: 95vh;
+}
+.userpage .usercontainer .content {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  border-radius: 5px;
+  overflow: hidden;
+  box-shadow: 0 7px 50px rgb(214, 223, 213);
+}
+
+.historycontent {
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  gap: 8px;
+  height: 100%;
+  width: 100%;
+}
+.historycontent .leftcontent {
+  grid-column: 1;
+  border-radius: 5px;
+  border-color: #41c7fc;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.historycontent .leftcontent .historytable {
+  flex: 1;
+}
+.historycontent .leftcontent .historytable caption {
+  text-transform: uppercase;
+  font-weight: bold;
+  color: #41c7fc;
+  text-align: center;
+}
+.historycontent .leftcontent .historytable thead {
+  border-top: 2px solid #41c7fc;
+  border-bottom: 2px solid #41c7fc;
+}
+.historycontent .leftcontent .historytable thead th {
+  text-transform: uppercase;
+  text-align: center;
+  padding: 10px;
+  color: #006ac6;
+  border: 1px solid #F1F1F1;
+}
+.historycontent .leftcontent .historytable tbody tr {
+  border-bottom: 1px solid #F1F1F1;
+  color: #75787b;
+}
+.historycontent .leftcontent .historytable tbody tr td, .historycontent .leftcontent .historytable tbody tr th {
+  padding: 10px;
+  border: 1px solid #F1F1F1;
+}
+.historycontent .leftcontent .historytable tfoot {
+  color: #41c7fc;
+  font-style: italic;
+  border-bottom: 2px solid #41c7fc;
+}
+.historycontent .leftcontent .historytable tfoot td {
+  padding: 10px;
+  border: 1px solid #F1F1F1;
+}
+.historycontent .leftcontent .chartdata {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.historycontent .rightcontent {
+  grid-column: 2;
+  border-radius: 5px;
+  border-color: #41c7fc;
 }/*# sourceMappingURL=App.css.map */

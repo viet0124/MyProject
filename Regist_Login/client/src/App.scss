@@ -429,52 +429,283 @@ img, video{
     }
     
 }
+// Css trang Admin
+.adminpage{
+    height: 100vh;
+    width: 100%;   
+    justify-content: center;
 
-.AdminPage{
-    .dashboard{
-        .dashboardcontainer{
-            .side{
-                width: 20%;
+    .admincontainer{
+        display: flex;
+        flex-direction: row;
+        //justify-content: space-between;
+        height: 95vh;
+        width: 95%;
+        border-radius: 5px;
+        overflow: hidden;
+        box-shadow: 0 7px 50px rgb(214, 223, 213);  
+        .side{
+            display: flex;
+            width: 10%;
+            height: 95vh;
+        }
+        .content{
+            display: flex;
+            flex-direction: column;
+            width: 90%;
+            height: 95vh;
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 7px 50px rgb(214, 223, 213);
+            .body{
+                width: 100%;
                 height: 100%;
-                background: var(--bg-color);
-                padding: 1rem;
-                border-radius: 5px;
-                box-shadow: 0 7px 50px rgb(214, 223, 213);
-            }
-            .content{
-                width: 80%;
-                height: 100%;
-                background: var(--white-color);
-                padding: 1rem;
-                border-radius: 5px;
-                box-shadow: 0 7px 50px rgb(214, 223, 213);
-                .body{
-                    .container{
-                        .top{
-                            display: flex;
-                            justify-content: space-between;
-                            align-items: center;
-    
-                            .button{
-                                background: var(--primary-color);
-                                color: var(--white-color);
-                                padding: .8rem 1.5rem;
-                                border-radius: 10px;
-                                font-weight: 400;
-                                transition: .3s ease;
-                                &:hover{
-                                    background: var(--hover-color);
-                                    color: var(--black-color);
-                                    .icon{
-                                        color: var(--black-color);
-                                        transform: translateX(5px);
-                                    }
-                                }
+                .headerDiv{
+                    padding: 1.5rem;
+                    width: 100%;
+                    background: rgba($color: #d6eef8, $alpha: 1.0);
+                    box-shadow: 10%;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    .title{
+                        font-size: 30px;
+                        color: rgba($color: #151e22, $alpha: 1.0);
+                        font-weight: 600;
+                    }
+                }
+                .top{
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    width: 100%;
+                    height: auto;
+                    .adminControll{
+                        justify-content: center;
+                        align-items: center;
+                        width: 100%;
+                        padding: 10px;
+                        gap: 1rem;
+                        .button{
+                            padding: 10px;
+                            width: 200px;
+                            background-color: rgba($color: #d6f0fa, $alpha: 1.0);
+                            border-radius: 5px;
+                            font-size: 16px;
+                            font-weight: 500;
+                            cursor: pointer;
+                            transition: .3s ease;
+                            border: none;
+                            &:hover{
+                                background: rgba($color: #41c7fc, $alpha: 1.0);
+                                color: rgba($color: #f0f4f6, $alpha: 1.0);
                             }
                         }
                     }
+                }
+                .mid{
+                    display: flex;
+
                 }
             }
         }
     }
 }
+
+
+// Css danh sach nhan vien
+.list{
+    width: 100%;
+    height: 30px;
+    justify-content: center;
+    flex-direction: column;
+    .searchbar{
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        .search{
+            .icon{
+                color: var(--grey-text);
+                cursor: pointer;
+                transform: translateX(-100%);
+                right: -15px;
+                top: 50%;
+            }
+                    
+            .input{
+                gap : .5rem;
+                padding: 1rem;
+                background: var(--input-color);
+                border-radius: 10px;
+            }
+        }
+        
+    }
+    $background: #efefef;
+    $lfs-blue: #006ac6;
+    $lfs-yellow: #fab700;
+    $lfs-grey: #75787b;
+
+    .table {
+        width: 100%;
+        caption {
+            text-transform: uppercase;
+            font-weight: bold;
+            color: $lfs-yellow;
+            text-align: center;
+        }
+        thead {
+            border-top: 2px solid $lfs-yellow;
+            border-bottom: 2px solid $lfs-yellow;
+            th {
+                text-transform: uppercase;
+                text-align: center;
+                padding: 10px;
+                color: $lfs-blue;
+                border: 1px solid #F1F1F1;
+            }
+        }
+        tbody {
+            tr {
+                border-bottom: 1px solid #F1F1F1;
+                color: $lfs-grey;
+                td {
+                    padding: 10px;
+                    border: 1px solid #F1F1F1;
+                }
+                th {
+                    padding-left: 10px;
+                    border: 1px solid #F1F1F1;
+                }
+            }
+        }
+        tfoot {
+            color: $lfs-yellow;
+            font-style: italic;
+            border-bottom: 2px solid $lfs-yellow;
+            tr {
+                td {
+                    padding: 10px;
+                    border: 1px solid #F1F1F1;
+                }
+            }
+        }
+    }
+}
+
+
+// Css thong ke 
+
+
+
+// Css Userpage
+.userpage{
+    height: 100vh;
+    width: 100%;   
+    justify-content: center;
+    .usercontainer{
+        display: flex;
+        flex-direction: row;
+        height: 95%;
+        width: 95%;
+        border-radius: 5px;
+        overflow: hidden;
+        box-shadow: 0 7px 50px rgb(214, 223, 213);  
+        .side{
+            display: flex;
+            width: 10%;
+            height: 95vh;
+        }
+        .content{
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 7px 50px rgb(214, 223, 213);
+            
+        }
+    }
+}
+
+
+// Css hisroty
+.historycontent {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    gap: 8px;
+    height: 100%;
+    width: 100%;
+    .leftcontent {
+        grid-column: 1;
+        border-radius: 5px;
+        border-color: #41c7fc;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+
+        .historytable {
+            flex: 1;
+
+            caption {
+                text-transform: uppercase;
+                font-weight: bold;
+                color: #41c7fc;
+                text-align: center;
+            }
+
+            thead {
+                border-top: 2px solid #41c7fc;
+                border-bottom: 2px solid #41c7fc;
+
+                th {
+                    text-transform: uppercase;
+                    text-align: center;
+                    padding: 10px;
+                    color: #006ac6;
+                    border: 1px solid #F1F1F1;
+                }
+            }
+
+            tbody {
+                tr {
+                    border-bottom: 1px solid #F1F1F1;
+                    color: #75787b;
+
+                    td, th {
+                        padding: 10px;
+                        border: 1px solid #F1F1F1;
+                    }
+                }
+            }
+
+            tfoot {
+                color: #41c7fc;
+                font-style: italic;
+                border-bottom: 2px solid #41c7fc;
+
+                td {
+                    padding: 10px;
+                    border: 1px solid #F1F1F1;
+                }
+            }
+        }
+
+        .chartdata {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    }
+
+    .rightcontent {
+        grid-column: 2;
+        border-radius: 5px;
+        border-color: #41c7fc;
+        
+    }
+}
+

@@ -3,7 +3,7 @@ import axios from 'axios';
 
 // CSS
 import './../../../../App.css';
-import './ForUser.css';
+
 
 // Icons
 import { IoSearchSharp } from "react-icons/io5";
@@ -52,7 +52,10 @@ const History = () => {
         </select>
         <input type="text" name="" id="" />
       </div>
-      <table className='table'>
+      <div className="historycontent">
+        <div className="leftcontent">
+          <div className="historytable">
+            <table className='table'>
         <caption>Bảng Chấm Công </caption>
         <thead>
           <tr>
@@ -79,7 +82,19 @@ const History = () => {
             </tr>
           ))}
         </tbody>
-      </table>
+            </table>
+          </div>
+          <div className="chartdata">
+            aaa
+          </div>
+        </div>
+        <div className="rightcontent">
+          <div className="userprofile">
+            UserProfile
+            
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

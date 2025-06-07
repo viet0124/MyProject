@@ -4,6 +4,8 @@ import icon from './../../Assets/logo.png'
 import './../../../../App.css'
 import './../SideBar/SideBar.css'
 
+import { Link, useNavigate } from 'react-router-dom'
+
 // Icons
 import { MdSpaceDashboard } from "react-icons/md";
 import { CiLogout } from "react-icons/ci";
@@ -53,10 +55,12 @@ const SideBar = () => {
                         </li>
                     </ul>
                 </div>
-                <button className='btn flex'>
-                    <span>Logout</span>
-                    <CiLogout className='icon'/>
-                </button>
+                <Link to= '/' >
+                    <button className='btn flex' >
+                        <span>Logout</span>
+                        <CiLogout className='icon'/>
+                    </button>
+                </Link> 
                 <div className="helpcenter flex">
                     <IoMdHelpCircleOutline className='icon'/>
                     <span>Help Center</span>

@@ -28,10 +28,9 @@ const List = () => {
 
   return (
     <div className='list'>
-      {/* <div className="searchbar">
-        <input type="text" id='search' placeholder='Search...' />
-        <IoSearchSharp className='icon'/>
-        <select name="" value={selectedMonth} id="month" onChange={handleMonth}>
+      <div className="topContent flex">
+        <div className="searchbar">
+          <select name="" value={selectedMonth} id="month" >
             <option value="">--Tất cả tháng--</option>
             <option value="1">Tháng 1</option>
             <option value="2">Tháng 2</option>
@@ -45,10 +44,15 @@ const List = () => {
             <option value="10">Tháng 10</option>
             <option value="11">Tháng 11</option>
             <option value="12">Tháng 12</option>
-        </select>
-        <input type="text" name="" id="" />
-      </div> */}
-      <table className='table'>
+          </select>
+          <div className="search">
+            <input type="text" name="" id="" />
+            <IoSearchSharp className='icon' />
+          </div>
+        </div>
+      </div>
+      <div className="mainContent">
+        <table className='table'>
         <caption>Bảng Nhan Su </caption>
         <thead>
           <tr>
@@ -63,7 +67,7 @@ const List = () => {
         <tbody>
           {data.length === 0 && (
             <tr>
-              <td colSpan="5" style={{textAlign: 'center'}}>Không có dữ liệu cho tháng này</td>
+              <td colSpan="6" style={{textAlign: 'center'}}>Không có dữ liệu cho tháng này</td>
             </tr>
           )}
           {data.map((row, index) => (
@@ -78,6 +82,7 @@ const List = () => {
           ))}
         </tbody>
       </table>
+      </div>
     </div>
   );
 };

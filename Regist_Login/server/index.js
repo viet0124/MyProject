@@ -2,9 +2,13 @@ const express = require('express');
 const app = express();
 const mysql = require('mysql');
 const cors = require('cors');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
 
-app.use(express.json())
-app.use(cors())
+app.use(express.json());
+app.use(cors());
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.listen(3002, () => {
   console.log('Server is running on port 3002');
@@ -17,22 +21,42 @@ const db = mysql.createConnection({
     database: 'quanlychamcong'
 })
 
-app.post('/register', (req, res) => {
-    const email = req.body.Email;
-    const username = req.body.Username;
-    const password = req.body.Password; 
-    id = Math.floor(Math.random() * 1000);
-    role = 'user';
-    const sqlInsert = "INSERT INTO taikhoan (ma_nhan_vien, ten_dang_nhap, mat_khau, email, vai_tro) VALUES (?, ?, ?, ?,?)";
-    const VALUES = [id, username, password, email, role];
-    db.query(sqlInsert, VALUES, (err, result) => {
-        if (err) {
-            console.log(err);
-            res.send({ message: err });
-        } else {
-            res.send({ message: 'User registered successfully!' });
-        }
-    }); 
+// Khởi tạo thư mục uploads nếu chưa có
+const uploadDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir);
+}
+
+// Cấu hình multer
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/');
+  },
+  filename: (req, file, cb) => {
+    const uniqueName = Date.now() + '-' + file.originalname;
+    cb(null, uniqueName);
+  }
+});
+const upload = multer({ storage });
+
+app.post('/register', upload.single('image'), (req, res) => {
+  const { Email, Username, Password } = req.body;
+  const imagePath = req.file ? req.file.filename : null;
+
+  const id = Math.floor(Math.random() * 1000);
+  const role = 'user';
+
+  const sqlInsert = "INSERT INTO taikhoan (ma_nhan_vien, ten_dang_nhap, mat_khau, email, vai_tro, anh) VALUES (?, ?, ?, ?, ?, ?)";
+  const VALUES = [id, Username, Password, Email, role, imagePath];
+
+  db.query(sqlInsert, VALUES, (err, result) => {
+    if (err) {
+      console.log(err);
+      res.send({ message: err });
+    } else {
+      res.send({ message: 'User registered successfully!' });
+    }
+  });
 });
 
 app.post('/login', (req, res) => {
@@ -104,9 +128,9 @@ app.get('/list', (req, res) => {
     nv.trang_thai,
     COUNT(cc.ma_cham_cong) AS so_lan_cham_cong
 FROM 
-    taikhoan tk
-JOIN 
-    nhanvien nv ON tk.ma_nhan_vien = nv.ma_nhan_vien
+    nhanvien nv
+LEFT JOIN 
+    taikhoan tk ON tk.ma_nhan_vien = nv.ma_nhan_vien
 LEFT JOIN 
     chamcong cc ON nv.ma_nhan_vien = cc.ma_nhan_vien
 GROUP BY 
@@ -124,3 +148,31 @@ ORDER BY
     }
   });
 });
+
+app.put('/update-employee/:id', (req, res) => {
+  const ma_nhan_vien = req.params.id;
+  const { ho_ten, phong_ban, chuc_vu, trang_thai } = req.body;
+
+  const sql = `
+    UPDATE nhanvien 
+    SET ho_ten = ?, phong_ban = ?, chuc_vu = ?, trang_thai = ?
+    WHERE ma_nhan_vien = ?
+  `;
+
+  db.query(sql, [ho_ten, phong_ban, chuc_vu, trang_thai, ma_nhan_vien], (err, result) => {
+    if (err) return res.status(500).json({ message: 'Lỗi khi cập nhật', error: err });
+    res.json({ message: 'Cập nhật thành công' });
+  });
+});
+
+app.post('/add-employee', (req, res) => {
+  const { ma_nhan_vien, ho_ten, phong_ban, chuc_vu, trang_thai } = req.body;
+
+  const sql = `INSERT INTO nhanvien (ma_nhan_vien, ho_ten, phong_ban, chuc_vu, trang_thai) VALUES (?, ?, ?, ?, ?)`;
+
+  db.query(sql, [ma_nhan_vien, ho_ten, phong_ban, chuc_vu, trang_thai], (err, result) => {
+    if (err) return res.status(500).json({ message: 'Lỗi thêm nhân viên', error: err });
+    res.json({ message: 'Thêm nhân viên thành công' });
+  });
+});
+
