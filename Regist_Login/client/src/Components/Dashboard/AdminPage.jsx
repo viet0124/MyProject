@@ -44,7 +44,7 @@ const AdminPage = () => {
                 
                 <div className="adminControll flex">
                   <button type="button" className='button' onClick={() => setActivePage('employee')}>Danh Sách Nhân Viên</button>
-                  <button type="button" className='button' onClick={() => setActivePage('statistics')}>Thống Kê</button>
+                  {/* <button type="button" className='button' onClick={() => setActivePage('statistics')}>Thống Kê</button> */}
                   <button type="button" className='button' onClick={() => setActivePage('edit')}>Chỉnh Sửa</button>
                 </div>
               </div>
