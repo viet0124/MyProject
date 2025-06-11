@@ -26,15 +26,15 @@ const SideBar = () => {
                     <ul className='setting'>
                         <li className='listItem'>
                             <MdSpaceDashboard className='icon' />
-                            <a href="./">Item 1</a>
+                            <a href="./">Trang chủ</a>
                         </li>
                         <li className='listItem'>
                             <MdSpaceDashboard className='icon' />
-                            <a href="./">Item 1</a>
+                            <a href="./">Thông tin</a>
                         </li>
                         <li className='listItem'>
                             <MdSpaceDashboard className='icon' />
-                            <a href="./">Item 1</a>
+                            <a href="./">Sự kiện</a>
                         </li>
                     </ul>
                 </div>
@@ -43,16 +43,13 @@ const SideBar = () => {
                     <ul className='setting'>
                         <li className='listItem'>
                             <MdSpaceDashboard className='icon' />
-                            <a href="./">Item 1</a>
+                            <a href="./">Thông báo</a>
                         </li>
                         <li className='listItem'>
                             <MdSpaceDashboard className='icon' />
-                            <a href="./">Item 1</a>
+                            <a href="./">Cài đặt chung</a>
                         </li>
-                        <li className='listItem'>
-                            <MdSpaceDashboard className='icon' />
-                            <a href="./">Item 1</a>
-                        </li>
+                        
                     </ul>
                 </div>
                 <Link to= '/' >

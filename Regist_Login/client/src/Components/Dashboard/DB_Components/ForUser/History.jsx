@@ -84,16 +84,16 @@ const History = () => {
         </tbody>
             </table>
           </div>
-          <div className="chartdata">
+          {/* <div className="chartdata">
             aaa
-          </div>
+          </div> */}
         </div>
-        <div className="rightcontent">
+        {/* <div className="rightcontent">
           <div className="userprofile">
             UserProfile
             
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

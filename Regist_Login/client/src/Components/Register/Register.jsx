@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import './Register.css';
 import '../../App.css';
 
@@ -10,7 +10,6 @@ import { AiOutlineSwapRight } from "react-icons/ai";
 import { BsFillShieldLockFill } from "react-icons/bs";
 import { IoIosMail } from "react-icons/io";
 
-import Webcam from 'react-webcam';
 import video from '../../LoginAssets/bgvid.mp4';
 import icon from '../../LoginAssets/logo.png';
 
@@ -18,43 +17,75 @@ const Register = () => {
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [showWebcam, setShowWebcam] = useState(false);
-  const webcamRef = useRef(null);
+  const [id, setId] = useState('');
+  const [vectorId, setVectorId] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [showCam, setShowCam] = useState(false);
 
-  const captureAndRegister = () => {
-    const imageSrc = webcamRef.current.getScreenshot();
+  const RASPI_STREAM_URL = 'http://<RASPI_IP>:5000/stream'; //Thay bằng IP thật
+  const RASPI_CAPTURE_URL = 'http://<RASPI_IP>:5000/capture-and-vectorize';
+  const BACKEND_CHECK_ID_URL = `http://localhost:3002/check-id`;
+  const BACKEND_REGISTER_URL = 'http://localhost:3002/register';
 
-    fetch(imageSrc)
-      .then(res => res.blob())
-      .then(blob => {
-        const formData = new FormData();
-        formData.append('Email', email);
-        formData.append('Username', username);
-        formData.append('Password', password);
-        formData.append('image', blob, 'face.jpg');
-
-        Axios.post('http://localhost:3002/register', formData)
-          .then((response) => {
-            alert(response.data.message);
-            setShowWebcam(false);
-            setEmail('');
-            setUsername('');
-            setPassword('');
-          })
-          .catch(err => {
-            console.error(err);
-            alert("Đăng ký thất bại.");
-          });
-      });
-  };
-
-  const handleSubmit = (e) => {
+  // 1. Bước đầu: kiểm tra ID
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!email || !username || !password) {
+
+    if (!id || !email || !username || !password) {
       alert('Vui lòng nhập đầy đủ thông tin.');
       return;
     }
-    setShowWebcam(true);
+
+    try {
+      const res = await Axios.get(`${BACKEND_CHECK_ID_URL}/${id}`);
+      if (!res.data.exists) {
+        alert('Mã nhân viên không tồn tại trong hệ thống!');
+        return;
+      }
+
+      // Cho phép bật cam nếu ID hợp lệ
+      setShowCam(true);
+    } catch (err) {
+      console.error(err);
+      alert('Lỗi khi kiểm tra mã nhân viên.');
+    }
+  };
+
+  // 2. Sau khi hiện camera và người dùng nhấn "Chụp và Đăng ký"
+  const captureAndRegister = async () => {
+    setLoading(true);
+
+    try {
+      const res = await Axios.post(RASPI_CAPTURE_URL, { requestId: id });
+
+      if (res.data && res.data.vectorId) {
+        const vectorId = res.data.vectorId;
+
+        const registerRes = await Axios.post(BACKEND_REGISTER_URL, {
+          ID: id,
+          Email: email,
+          Username: username,
+          Password: password,
+          VectorID: vectorId,
+        });
+
+        alert(registerRes.data.message);
+
+        // Reset form
+        setEmail('');
+        setUsername('');
+        setPassword('');
+        setId('');
+        setShowCam(false);
+      } else {
+        alert('Không nhận được vectorId từ Raspberry Pi.');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Lỗi khi chụp ảnh hoặc đăng ký.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -78,43 +109,70 @@ const Register = () => {
             <h3>Hello</h3>
           </div>
 
-          {showWebcam ? (
+          {showCam ? (
             <div className="webcamDiv">
-              <Webcam
-                audio={false}
-                ref={webcamRef}
-                screenshotFormat="image/jpeg"
-                width={320}
-                height={240}
-              />
-              <button className="btn" onClick={captureAndRegister}>Chụp và Đăng ký</button>
+              <img src={RASPI_STREAM_URL} alt="Live Camera" width={320} height={240} />
+              <button className="btn" onClick={captureAndRegister} disabled={loading}>
+                {loading ? 'Đang xử lý...' : 'Chụp và Đăng ký'}
+              </button>
             </div>
           ) : (
             <form className='form grid' onSubmit={handleSubmit}>
               <div className="inputDiv">
-                <label htmlFor="Email">Email</label>
+                <label htmlFor="ID">ID</label>
                 <div className="input flex">
-                  <IoIosMail className='icon'/>
-                  <input type="email" placeholder='Enter Email' value={email} onChange={(e) => setEmail(e.target.value)} />
+                  <BsFillShieldLockFill className='icon' />
+                  <input
+                    type="text"
+                    placeholder='Nhập ID'
+                    value={id}
+                    onChange={(e) => setId(e.target.value)}
+                  />
                 </div>
               </div>
+
+              <div className="inputDiv">
+                <label htmlFor="Email">Email</label>
+                <div className="input flex">
+                  <IoIosMail className='icon' />
+                  <input
+                    type="email"
+                    placeholder='Nhập Email'
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </div>
+              </div>
+
               <div className="inputDiv">
                 <label htmlFor="Username">Username</label>
                 <div className="input flex">
-                  <FaUserShield className='icon'/>
-                  <input type="text" placeholder='Enter Username' value={username} onChange={(e) => setUsername(e.target.value)} />
+                  <FaUserShield className='icon' />
+                  <input
+                    type="text"
+                    placeholder='Nhập Username'
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                  />
                 </div>
               </div>
+
               <div className="inputDiv">
                 <label htmlFor="Password">Password</label>
                 <div className="input flex">
-                  <BsFillShieldLockFill className='icon'/>
-                  <input type="password" placeholder='Enter Password' value={password} onChange={(e) => setPassword(e.target.value)} />
+                  <BsFillShieldLockFill className='icon' />
+                  <input
+                    type="password"
+                    placeholder='Nhập Password'
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
                 </div>
               </div>
+
               <button type='submit' className='btn flex'>
-                <span>Tiếp tục</span>
-                <AiOutlineSwapRight className='icon'/>
+                <span>Next</span>
+                <AiOutlineSwapRight className='icon' />
               </button>
             </form>
           )}

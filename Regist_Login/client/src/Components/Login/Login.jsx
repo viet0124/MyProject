@@ -92,7 +92,7 @@ const Login = () => {
               <span>Login</span>
               <CiLogin className='icon'/>
             </button>
-            <a href="/dashboard">dash</a>
+            
             <span className='forgotPassword'>
               Forgot Password?  
               <a href=""> Click Here!</a>

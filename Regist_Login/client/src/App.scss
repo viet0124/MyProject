@@ -632,80 +632,146 @@ img, video{
 
 
 // Css hisroty
-.historycontent {
-    display: grid;
-    grid-template-columns: 3fr 1fr;
-    gap: 8px;
-    height: 100%;
-    width: 100%;
-    .leftcontent {
-        grid-column: 1;
-        border-radius: 5px;
-        border-color: #41c7fc;
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
+.history{
+    .searchbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 16px;
+  padding: 12px 16px;
+  background-color: #ffffff;
+  border: 2px solid #41c7fc;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 
-        .historytable {
-            flex: 1;
+  input[type="text"],
+  select {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    min-width: 180px;
+    transition: all 0.3s ease;
 
-            caption {
-                text-transform: uppercase;
-                font-weight: bold;
-                color: #41c7fc;
-                text-align: center;
-            }
-
-            thead {
-                border-top: 2px solid #41c7fc;
-                border-bottom: 2px solid #41c7fc;
-
-                th {
-                    text-transform: uppercase;
-                    text-align: center;
-                    padding: 10px;
-                    color: #006ac6;
-                    border: 1px solid #F1F1F1;
-                }
-            }
-
-            tbody {
-                tr {
-                    border-bottom: 1px solid #F1F1F1;
-                    color: #75787b;
-
-                    td, th {
-                        padding: 10px;
-                        border: 1px solid #F1F1F1;
-                    }
-                }
-            }
-
-            tfoot {
-                color: #41c7fc;
-                font-style: italic;
-                border-bottom: 2px solid #41c7fc;
-
-                td {
-                    padding: 10px;
-                    border: 1px solid #F1F1F1;
-                }
-            }
-        }
-
-        .chartdata {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+    &:focus {
+      outline: none;
+      border-color: #41c7fc;
+      box-shadow: 0 0 5px rgba(65, 199, 252, 0.4);
     }
+  }
+
+  .icon {
+    font-size: 1.2rem;
+    color: #41c7fc;
+    margin-left: 4px;
+  }
+
+  #search {
+    flex: 1;
+    min-width: 200px;
+  }
+
+  #month {
+    min-width: 140px;
+  }
+}
+
+.historycontent {
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  gap: 16px;
+  padding: 16px;
+  width: 100%;
+  box-sizing: border-box;
+    
+  .leftcontent {
+    grid-column: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    background-color: #fff;
+    border: 2px solid #41c7fc;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+
+    .historytable {
+      width: 100%;
+      overflow-x: auto;
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+
+        caption {
+          text-transform: uppercase;
+          font-weight: bold;
+          font-size: 1.2rem;
+          color: #41c7fc;
+          padding: 8px 0;
+          text-align: center;
+        }
+
+        thead {
+          background-color: #e6f7ff;
+
+          th {
+            text-transform: uppercase;
+            text-align: center;
+            padding: 12px;
+            color: #006ac6;
+            border: 1px solid #d0d0d0;
+          }
+        }
+
+        tbody {
+          tr {
+            transition: background 0.3s ease;
+
+            &:hover {
+              background-color: #f9f9f9;
+            }
+
+            td {
+              text-align: center;
+              padding: 10px;
+              color: #333;
+              border: 1px solid #f0f0f0;
+              font-size: 0.95rem;
+            }
+          }
+        }
+
+        tfoot {
+          td {
+            padding: 10px;
+            border: 1px solid #f0f0f0;
+            color: #41c7fc;
+            font-style: italic;
+            text-align: center;
+          }
+        }
+      }
+    }
+  }
+
+  .rightcontent {
+    grid-column: 2;
+    background-color: #fff;
+    border: 2px solid #41c7fc;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  }
+
+  @media screen and (max-width: 768px) {
+    grid-template-columns: 1fr;
 
     .rightcontent {
-        grid-column: 2;
-        border-radius: 5px;
-        border-color: #41c7fc;
-        
+      grid-column: 1;
     }
+  }
+}
 }
 
