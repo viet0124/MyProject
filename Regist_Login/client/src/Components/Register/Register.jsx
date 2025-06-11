@@ -19,15 +19,17 @@ const Register = () => {
   const [password, setPassword] = useState('');
   const [id, setId] = useState('');
   const [vectorId, setVectorId] = useState(null);
+  const [capturedImage, setCapturedImage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [showCam, setShowCam] = useState(false);
 
-  const RASPI_STREAM_URL = 'http://<RASPI_IP>:5000/stream'; //Thay bằng IP thật
+  // 👉 THAY <RASPI_IP> = IP tĩnh của RasPi
+  const RASPI_STREAM_URL = 'http://<RASPI_IP>:5000/stream';
   const RASPI_CAPTURE_URL = 'http://<RASPI_IP>:5000/capture-and-vectorize';
-  const BACKEND_CHECK_ID_URL = `http://localhost:3002/check-id`;
+  const RASPI_DELETE_URL = 'http://<RASPI_IP>:5000/delete-vector';
+  const BACKEND_CHECK_ID_URL = 'http://localhost:3002/check-id';
   const BACKEND_REGISTER_URL = 'http://localhost:3002/register';
 
-  // 1. Bước đầu: kiểm tra ID
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -42,8 +44,6 @@ const Register = () => {
         alert('Mã nhân viên không tồn tại trong hệ thống!');
         return;
       }
-
-      // Cho phép bật cam nếu ID hợp lệ
       setShowCam(true);
     } catch (err) {
       console.error(err);
@@ -51,41 +51,67 @@ const Register = () => {
     }
   };
 
-  // 2. Sau khi hiện camera và người dùng nhấn "Chụp và Đăng ký"
-  const captureAndRegister = async () => {
+  const handleCapture = async () => {
     setLoading(true);
-
     try {
       const res = await Axios.post(RASPI_CAPTURE_URL, { requestId: id });
-
-      if (res.data && res.data.vectorId) {
-        const vectorId = res.data.vectorId;
-
-        const registerRes = await Axios.post(BACKEND_REGISTER_URL, {
-          ID: id,
-          Email: email,
-          Username: username,
-          Password: password,
-          VectorID: vectorId,
-        });
-
-        alert(registerRes.data.message);
-
-        // Reset form
-        setEmail('');
-        setUsername('');
-        setPassword('');
-        setId('');
-        setShowCam(false);
+      if (res.data && res.data.vectorId && res.data.imageBase64) {
+        setVectorId(res.data.vectorId);
+        setCapturedImage(`data:image/jpeg;base64,${res.data.imageBase64}`);
       } else {
-        alert('Không nhận được vectorId từ Raspberry Pi.');
+        alert('Không nhận được dữ liệu từ Raspberry Pi.');
       }
     } catch (err) {
       console.error(err);
-      alert('Lỗi khi chụp ảnh hoặc đăng ký.');
+      alert('Lỗi khi chụp ảnh từ Raspberry Pi.');
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleRegister = async () => {
+    if (!vectorId || !capturedImage) {
+      alert('Chưa có ảnh để đăng ký!');
+      return;
+    }
+
+    try {
+      const registerRes = await Axios.post(BACKEND_REGISTER_URL, {
+        ID: id,
+        Email: email,
+        Username: username,
+        Password: password,
+        VectorID: vectorId,
+      });
+
+      alert(registerRes.data.message);
+
+      // Reset
+      setEmail('');
+      setUsername('');
+      setPassword('');
+      setId('');
+      setShowCam(false);
+      setCapturedImage(null);
+      setVectorId(null);
+    } catch (err) {
+      console.error(err);
+      alert('Lỗi khi đăng ký.');
+    }
+  };
+
+  const handleCancelOrRetake = async () => {
+    if (vectorId) {
+      try {
+        await Axios.post(RASPI_DELETE_URL, { vectorId });
+      } catch (err) {
+        console.error('Lỗi khi gửi yêu cầu xoá vector:', err);
+      }
+    }
+
+    // Reset ảnh và vector
+    setCapturedImage(null);
+    setVectorId(null);
   };
 
   return (
@@ -111,10 +137,26 @@ const Register = () => {
 
           {showCam ? (
             <div className="webcamDiv">
-              <img src={RASPI_STREAM_URL} alt="Live Camera" width={320} height={240} />
-              <button className="btn" onClick={captureAndRegister} disabled={loading}>
-                {loading ? 'Đang xử lý...' : 'Chụp và Đăng ký'}
-              </button>
+              {!capturedImage ? (
+                <>
+                  <img src={RASPI_STREAM_URL} alt="Live Camera" width={320} height={240} />
+                  <button className="btn" onClick={handleCapture} disabled={loading}>
+                    {loading ? 'Đang xử lý...' : 'Chụp ảnh'}
+                  </button>
+                </>
+              ) : (
+                <>
+                  <img src={capturedImage} alt="Ảnh đã chụp" width={320} height={240} />
+                  <div className='flex gap'>
+                    <button className="btn" onClick={handleRegister}>Đăng ký</button>
+                    <button className="btn" onClick={handleCancelOrRetake}>Chụp lại</button>
+                    <button className="btn" onClick={() => {
+                      handleCancelOrRetake();
+                      setShowCam(false);
+                    }}>Huỷ</button>
+                  </div>
+                </>
+              )}
             </div>
           ) : (
             <form className='form grid' onSubmit={handleSubmit}>
