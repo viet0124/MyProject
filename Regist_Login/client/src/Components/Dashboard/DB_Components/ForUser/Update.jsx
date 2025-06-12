@@ -51,6 +51,15 @@ const Update = () => {
   };
   const handleDelete = (ma_nhan_vien) => {
     if (window.confirm("Bạn có chắc chắn muốn xóa nhân viên này?")) {
+      axios.delete(`http://localhost:3002/delete-vector-by-mnv/${ma_nhan_vien}`)
+        .then(res => {
+          alert(res.data.message);
+          fetchData();
+        })
+        .catch(err => {
+          alert("Lỗi khi xóa vector nhân viên");
+          console.error(err);
+        });
       axios.delete(`http://localhost:3002/delete-employee/${ma_nhan_vien}`)
         .then(res => {
           alert(res.data.message);
@@ -60,6 +69,7 @@ const Update = () => {
           alert("Lỗi khi xóa nhân viên");
           console.error(err);
         });
+
     }
   };
 
@@ -115,7 +125,7 @@ const Update = () => {
                 <td>{row.trang_thai}</td>
                 <td>{row.so_lan_cham_cong}</td>
                 <td><button onClick={() => handleEdit(row)}>Edit</button></td>
-                <td><button onClick={() => handleDelete(row.ma_nhan_vien)}>Edit</button></td>
+                <td><button onClick={() => handleDelete(row.ma_nhan_vien)}>Delete</button></td>
               </tr>
             ))
           )}

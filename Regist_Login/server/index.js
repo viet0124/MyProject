@@ -236,48 +236,64 @@ app.put('/update-employee/:id', (req, res) => {
   });
 });
 
-// Xoa vector_id 
-app.post('/delete-vectors', async (req, res) => {
-  const vectorIDs = req.body.vectors;
+// Xoá vector_id theo id_vector
+app.get('/delete-vector/:id', (req, res) => {
+  const vector_id = req.params.id;
 
-  try {
-    await axios.post('http://<MODEL_SERVER_IP>:<PORT>/delete-vectors', {
-      vectors: vectorIDs
+  axios.get(`http://<model>:<port>/delete-vector/${vector_id}`)
+    .then(response => {
+      res.json({ message: 'Xoá vector thành công', data: response.data });
+    })
+    .catch(error => {
+      console.error('Lỗi khi xoá vector:', error.message);
+      res.status(500).json({ message: 'Lỗi khi xoá vector', error: error.message });
     });
-
-    res.json({ message: 'Đã gửi danh sách vector_id sang model server để xóa', vectorIDs });
-  } catch (error) {
-    res.status(500).json({ message: 'Lỗi khi gửi tới model server', error });
-  }
 });
-// Xóa nhân viên
-app.delete('/delete-employee/:id', async (req, res) => {
+
+
+// Xoa vector_id theo mã nhân viên
+app.get('/delete-vector-by-mnv/:id', (req, res) => {
   const ma_nhan_vien = req.params.id;
 
-  try {
-    // 1. Lấy danh sách vector_id từ bảng nhandien
-    const [vectorResults] = await db.promise().query(
-      `SELECT vector_id FROM nhandien WHERE ma_nhan_vien = ?`,
-      [ma_nhan_vien]
-    );
+  const sql = `SELECT vector_id FROM nhandien WHERE ma_nhan_vien = ?`;
+  db.query(sql, [ma_nhan_vien], (err, result) => {
+    if (err) {
+      console.error('Lỗi DB:', err);
+      return res.status(500).json({ message: 'Lỗi khi lấy vector_id', error: err });
+    }
 
-    const vectorIDs = vectorResults.map(row => row.vector_id);
+    if (result.length === 0 || !result[0].vector_id) {
+      return res.status(404).json({ message: 'Không tìm thấy vector_id cho nhân viên này' });
+    }
 
-    // 2. Gửi sang máy chủ chứa model (thay địa chỉ phù hợp)
-    await axios.post('http://<MODEL_SERVER_IP>:<PORT>/delete-vectors', {
-      vectors: vectorIDs
-    });
+    const vectorId = result[0].vector_id;
 
-    // 3. Sau khi gửi thành công, xóa nhân viên khỏi CSDL
-    await db.promise().query(`DELETE FROM nhanvien WHERE ma_nhan_vien = ?`, [ma_nhan_vien]);
-
-    res.json({ message: 'Xóa nhân viên thành công và đã gửi vector_id tới server model', vectorIDs });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Lỗi khi xử lý xoá nhân viên hoặc gửi model server', error: err });
-  }
+    axios.get(`http://localhost:3002/delete-vector/${vectorId}`)
+      .then(response => {
+        res.json({ message: 'Xoá vector thành công', data: response.data });
+      })
+      .catch(error => {
+        console.error('Lỗi khi xoá vector:', error.message);
+        res.status(500).json({ message: 'Lỗi khi xoá vector', error: error.message });
+      });
+  });
 });
 
+
+// Xóa nhân viên
+app.delete('/delete-employee/:id', (req, res) => {
+  const ma_nhan_vien = req.params.id;
+  const sql = 'DELETE FROM nhanvien WHERE ma_nhan_vien = ?';
+  db.query(sql, [ma_nhan_vien], (err, result) => {
+    if (err) return res.status(500).json({ message: 'Lỗi xoá nhân viên', error: err });
+    res.json({ message: 'xoá nhân viên thành công' });
+  });
+});
+
+
+
+
+// Thêm nhân viên mới
 app.post('/add-employee', (req, res) => {
   const { ma_nhan_vien, ho_ten, phong_ban, chuc_vu, trang_thai } = req.body;
 
