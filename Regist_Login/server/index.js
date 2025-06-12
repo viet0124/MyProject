@@ -40,23 +40,23 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // Nhận vector từ máy xử lý model
-app.post('/receive-vector', (req, res) => {
-  const { ID, vectorId } = req.body;
+// app.post('/receive-vector', (req, res) => {
+//   const { ID, vectorId } = req.body;
 
-  if (!ID || !vectorId) {
-    return res.status(400).json({ message: 'Thiếu ID hoặc vectorId' });
-  }
+//   if (!ID || !vectorId) {
+//     return res.status(400).json({ message: 'Thiếu ID hoặc vectorId' });
+//   }
 
-  const sql = 'UPDATE nhanvien SET id_vector = ? WHERE ma_nhan_vien = ?';
-  db.query(sql, [vectorId, ID], (err, result) => {
-    if (err) {
-      console.error('Lỗi khi cập nhật vector:', err);
-      return res.status(500).json({ message: 'Lỗi khi cập nhật vector' });
-    }
+//   const sql = 'UPDATE nhanvien SET id_vector = ? WHERE ma_nhan_vien = ?';
+//   db.query(sql, [vectorId, ID], (err, result) => {
+//     if (err) {
+//       console.error('Lỗi khi cập nhật vector:', err);
+//       return res.status(500).json({ message: 'Lỗi khi cập nhật vector' });
+//     }
 
-    res.json({ message: 'Vector được lưu thành công!' });
-  });
-});
+//     res.json({ message: 'Vector được lưu thành công!' });
+//   });
+// });
 
 
 
@@ -126,9 +126,6 @@ app.post('/register', (req, res) => {
 
 
 
-
-
-
 // Đăng nhập người dùng
 app.post('/login', (req, res) => {
     const LGusername = req.body.LoginUsername;
@@ -148,7 +145,7 @@ app.post('/login', (req, res) => {
     });
 });
 
-// Chấm công
+// Lấy thông tin chấm công của nhân viên theo tên đăng nhập
 app.get('/history/:username', (req, res) => {
   const username = req.params.username;
 
@@ -239,6 +236,48 @@ app.put('/update-employee/:id', (req, res) => {
   });
 });
 
+// Xoa vector_id 
+app.post('/delete-vectors', async (req, res) => {
+  const vectorIDs = req.body.vectors;
+
+  try {
+    await axios.post('http://<MODEL_SERVER_IP>:<PORT>/delete-vectors', {
+      vectors: vectorIDs
+    });
+
+    res.json({ message: 'Đã gửi danh sách vector_id sang model server để xóa', vectorIDs });
+  } catch (error) {
+    res.status(500).json({ message: 'Lỗi khi gửi tới model server', error });
+  }
+});
+// Xóa nhân viên
+app.delete('/delete-employee/:id', async (req, res) => {
+  const ma_nhan_vien = req.params.id;
+
+  try {
+    // 1. Lấy danh sách vector_id từ bảng nhandien
+    const [vectorResults] = await db.promise().query(
+      `SELECT vector_id FROM nhandien WHERE ma_nhan_vien = ?`,
+      [ma_nhan_vien]
+    );
+
+    const vectorIDs = vectorResults.map(row => row.vector_id);
+
+    // 2. Gửi sang máy chủ chứa model (thay địa chỉ phù hợp)
+    await axios.post('http://<MODEL_SERVER_IP>:<PORT>/delete-vectors', {
+      vectors: vectorIDs
+    });
+
+    // 3. Sau khi gửi thành công, xóa nhân viên khỏi CSDL
+    await db.promise().query(`DELETE FROM nhanvien WHERE ma_nhan_vien = ?`, [ma_nhan_vien]);
+
+    res.json({ message: 'Xóa nhân viên thành công và đã gửi vector_id tới server model', vectorIDs });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Lỗi khi xử lý xoá nhân viên hoặc gửi model server', error: err });
+  }
+});
+
 app.post('/add-employee', (req, res) => {
   const { ma_nhan_vien, ho_ten, phong_ban, chuc_vu, trang_thai } = req.body;
 
@@ -250,18 +289,17 @@ app.post('/add-employee', (req, res) => {
   });
 });
 
-
 // Nhận thông tin chấm công từ máy xử lý model
 app.post('/checkin', (req, res) => {
-  const { vectorId, timestamp } = req.body;
+  const { vectorId } = req.body;
 
-  if (!vectorId || !timestamp) {
-    return res.status(400).json({ message: 'Thiếu vectorId hoặc thời gian' });
+  if (!vectorId) {
+    return res.status(400).json({ message: 'Thiếu vectorId' });
   }
 
   // 1. Tìm mã nhân viên từ id_vector
   const findEmployeeSql = `SELECT ma_nhan_vien FROM nhanvien WHERE vector_id = ?`;
-
+  const timestamp = Date.now(); // Lấy thời gian hiện tại
   db.query(findEmployeeSql, [vectorId], (err, results) => {
     if (err) {
       console.error('Lỗi khi tìm mã nhân viên:', err);
